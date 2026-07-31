@@ -10,7 +10,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -24,8 +24,8 @@ public class Product {
     @Column(nullable = false)
     private int quantity;
 
-    @Column(name = "low_stock_threshold", nullable = false)
-    private int lowStockThreshold;
+    @Column(name = "low_stock_level", nullable = false)
+    private int lowStockLevel;
 
     @Column(
             name = "unit_price",
@@ -39,7 +39,7 @@ public class Product {
     }
 
     public boolean isLowStock() {
-        return quantity <= lowStockThreshold;
+        return quantity <= lowStockLevel;
     }
 
     public BigDecimal getTotalValue() {
@@ -52,11 +52,11 @@ public class Product {
         );
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -92,14 +92,12 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public int getLowStockThreshold() {
-        return lowStockThreshold;
+    public int getLowStockLevel() {
+        return lowStockLevel;
     }
 
-    public void setLowStockThreshold(
-            int lowStockThreshold
-    ) {
-        this.lowStockThreshold = lowStockThreshold;
+    public void setLowStockLevel(int lowStockLevel) {
+        this.lowStockLevel = lowStockLevel;
     }
 
     public BigDecimal getUnitPrice() {
