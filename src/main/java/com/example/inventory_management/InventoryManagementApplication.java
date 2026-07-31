@@ -1,13 +1,13 @@
-package com.example.investory_management;
+package com.example.inventory_management;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class InvestoryManagementApplication {
+public class InventoryManagementApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(InvestoryManagementApplication.class, args);
+		SpringApplication.run(InventoryManagementApplication.class, args);
 	}
 
 }
