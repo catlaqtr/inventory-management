@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Sign In - Inventory Management</title>
+    <title>Register Company - Inventory Management</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="auth-body">
@@ -20,41 +20,40 @@
                 </span>
                 <span class="auth-logo-text">I-nvy</span>
             </div>
-            <h1 class="auth-hero-title">Inventory,<br>simplified.</h1>
+            <h1 class="auth-hero-title">Start your<br>company hub.</h1>
             <p class="auth-hero-text">
-                Manage stock, billing, and your team in one place — built for your company.
+                Create your company account as admin, then invite staff and manage inventory with ease.
             </p>
         </div>
     </div>
 
     <div class="auth-panel auth-panel-form">
         <div class="auth-card modern">
-            <p class="auth-kicker">Welcome back</p>
-            <h2>Sign in</h2>
-            <p class="auth-subtitle">Access your company dashboard</p>
+            <p class="auth-kicker">Get started</p>
+            <h2>Create company</h2>
+            <p class="auth-subtitle">You’ll be registered as the company admin</p>
 
-            <div th:if="${param.error}" class="alert alert-danger">
-                Invalid username or password.
-            </div>
-            <div th:if="${param.logout}" class="alert alert-success">
-                Successfully signed out.
-            </div>
-            <div th:if="${param.registered}" class="alert alert-success">
-                Company account created! Please sign in as admin.
-            </div>
-            <div th:if="${param.passwordReset}" class="alert alert-success">
-                Password updated. Sign in with your new password.
-            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-            <form th:action="@{/login}" method="post" class="auth-form">
+            <form th:action="@{/register}" th:object="${user}" method="post" class="auth-form">
                 <div class="form-group">
-                    <label for="username">Username</label>
+                    <label for="companyName">Company Name</label>
+                    <div class="input-with-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 20V9l8-5 8 5v11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                            <path d="M9 20v-6h6v6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                        </svg>
+                        <input id="companyName" type="text" th:field="*{companyName}" placeholder="Your company name" required autofocus />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="username">Admin Username</label>
                     <div class="input-with-icon">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <circle cx="12" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
                             <path d="M5 19c0-3.2 3-5.2 7-5.2s7 2 7 5.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                         </svg>
-                        <input id="username" type="text" name="username" placeholder="Enter username" required autofocus />
+                        <input id="username" type="text" th:field="*{username}" placeholder="Choose a username" required />
                     </div>
                 </div>
                 <div class="form-group">
@@ -64,18 +63,15 @@
                             <rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
                             <path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                         </svg>
-                        <input id="password" type="password" name="password" placeholder="Enter password" required />
+                        <input id="password" type="password" th:field="*{password}" placeholder="Create a password" required />
                     </div>
-                    <p class="auth-forgot">
-                        <a th:href="@{/forgot-password}">Forgot password?</a>
-                    </p>
                 </div>
-                <button type="submit" class="btn-primary auth-submit">Sign In</button>
+                <button type="submit" class="btn-primary auth-submit">Create Company Account</button>
             </form>
 
             <p class="auth-footer">
-                New company?
-                <a th:href="@{/register}">Create an account</a>
+                Already have an account?
+                <a th:href="@{/login}">Sign in</a>
             </p>
         </div>
     </div>

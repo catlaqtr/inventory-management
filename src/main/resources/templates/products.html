@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Products - Inventory Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-body">
+
+<div th:replace="~{fragments/navbar :: sidebar('products')}"></div>
+
+<div class="main-content">
+    <div class="header-bar">
+        <div>
+            <p class="page-kicker">Catalog</p>
+            <h1>Inventory</h1>
+            <p class="page-subtitle">Manage products and stock levels</p>
+        </div>
+        <a th:href="@{/products/add}" class="btn-action">+ Add Product</a>
+    </div>
+
+    <form class="search-bar" th:action="@{/products}" method="get">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Search by name or category..." />
+        <button type="submit" class="btn-secondary">Search</button>
+        <a th:href="@{/products}" class="btn-link">Clear</a>
+    </form>
+
+    <details th:if="${lowStockProducts != null and !lowStockProducts.isEmpty()}"
+             class="low-stock-alert">
+        <summary>
+            <strong>
+                <span th:text="${#lists.size(lowStockProducts)}">2</span>
+                low stock
+                <span th:text="${#lists.size(lowStockProducts) == 1} ? 'alert' : 'alerts'">alerts</span>
+            </strong>
+            <span class="low-stock-alert-hint">Click to view</span>
+        </summary>
+        <ul class="low-stock-alert-list">
+            <li th:each="p : ${lowStockProducts}">
+                <span th:text="${p.name}">Product</span>
+                <span class="low-stock-left" th:text="${p.quantity} + ' left'">0 left</span>
+            </li>
+        </ul>
+    </details>
+
+    <div class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Low Stock</th>
+                <th>Unit Price</th>
+                <th>Total Value</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${products == null or products.isEmpty()}">
+                <td colspan="7" class="empty-row">No products found.</td>
+            </tr>
+            <tr th:each="product : ${products}" th:classappend="${product.lowStock} ? 'low-stock-row'">
+                <td th:text="${product.name}">Name</td>
+                <td th:text="${product.category}">Category</td>
+                <td th:text="${product.quantity}">0</td>
+                <td th:text="${product.lowStockLevel}">0</td>
+                <td th:text="${#numbers.formatDecimal(product.unitPrice, 1, 2)}">0.00</td>
+                <td th:text="${#numbers.formatDecimal(product.totalValue, 1, 2)}">0.00</td>
+                <td class="actions">
+                    <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn-link">Edit</a>
+                    <a th:href="@{/products/delete/{id}(id=${product.id})}"
+                       class="btn-link danger"
+                       onclick="return confirm('Delete this product?');">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reports - Inventory Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-body">
+
+<div th:replace="~{fragments/navbar :: sidebar('reports')}"></div>
+
+<div class="main-content">
+    <div class="header-bar">
+        <div>
+            <p class="page-kicker">Insights</p>
+            <h1>Reports</h1>
+            <p class="page-subtitle">Inventory value, sales, and recent activity</p>
+        </div>
+    </div>
+
+    <div class="metrics-grid dashboard-metrics">
+        <div class="metric-card modern">
+            <div class="metric-card-top">
+                <h3>Total Products</h3>
+            </div>
+            <div class="metric-number" th:text="${totalProducts}">0</div>
+        </div>
+        <div class="metric-card modern">
+            <div class="metric-card-top">
+                <h3>Total Quantity</h3>
+            </div>
+            <div class="metric-number" th:text="${totalQuantity}">0</div>
+        </div>
+        <div class="metric-card modern">
+            <div class="metric-card-top">
+                <h3>Inventory Value</h3>
+            </div>
+            <div class="metric-number" th:text="${#numbers.formatDecimal(totalValue, 1, 2)}">0.00</div>
+        </div>
+        <div class="metric-card modern">
+            <div class="metric-card-top">
+                <h3>Invoices</h3>
+            </div>
+            <div class="metric-number" th:text="${invoiceCount}">0</div>
+        </div>
+        <div class="metric-card modern">
+            <div class="metric-card-top">
+                <h3>Total Sales</h3>
+            </div>
+            <div class="metric-number" th:text="${#numbers.formatDecimal(totalSales, 1, 2)}">0.00</div>
+        </div>
+    </div>
+
+    <div class="page-section-title">
+        <p class="page-kicker">Billing</p>
+        <h2 class="section-title" style="margin:0;">Invoices</h2>
+    </div>
+    <div class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th>Invoice #</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${invoices == null or invoices.isEmpty()}">
+                <td colspan="5" class="empty-row">No invoices found.</td>
+            </tr>
+            <tr th:each="invoice : ${invoices}">
+                <td th:text="${invoice.invoiceNumber}">INV-001</td>
+                <td th:text="${invoice.customerName}">Customer</td>
+                <td th:text="${invoice.formattedInvoiceDate}">Date</td>
+                <td th:text="${#numbers.formatDecimal(invoice.totalAmount, 1, 2)}">0.00</td>
+                <td>
+                    <a th:href="@{/billing/{id}(id=${invoice.id})}" class="btn-link">View</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page-section-title">
+        <p class="page-kicker">Alerts</p>
+        <h2 class="section-title" style="margin:0;">Low Stock Products</h2>
+    </div>
+    <div class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Low Stock Level</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${lowStockProducts == null or lowStockProducts.isEmpty()}">
+                <td colspan="4" class="empty-row">No low-stock products.</td>
+            </tr>
+            <tr th:each="product : ${lowStockProducts}" class="low-stock-row">
+                <td th:text="${product.name}">Name</td>
+                <td th:text="${product.category}">Category</td>
+                <td th:text="${product.quantity}">0</td>
+                <td th:text="${product.lowStockLevel}">0</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page-section-title">
+        <p class="page-kicker">Activity</p>
+        <h2 class="section-title" style="margin:0;">Recent Transactions</h2>
+    </div>
+    <div class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Product</th>
+                <th>Type</th>
+                <th>Quantity</th>
+                <th>Note</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${transactions == null or transactions.isEmpty()}">
+                <td colspan="5" class="empty-row">No transactions found.</td>
+            </tr>
+            <tr th:each="tx : ${transactions}">
+                <td th:text="${tx.formattedTransactionDate}">Date</td>
+                <td th:text="${tx.product.name}">Product</td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${tx.type == 'STOCK_IN'} ? 'badge-in' : 'badge-out'"
+                          th:text="${tx.type}">TYPE</span>
+                </td>
+                <td th:text="${tx.quantity}">0</td>
+                <td th:text="${tx.note}">Note</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

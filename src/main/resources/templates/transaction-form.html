@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Record Transaction - Inventory Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-body">
+
+<div th:replace="~{fragments/navbar :: sidebar('transactions')}"></div>
+
+<div class="main-content form-page">
+    <div class="header-bar">
+        <div>
+            <p class="page-kicker">Stock movement</p>
+            <h1>Record Transaction</h1>
+            <p class="page-subtitle">Add stock in or stock out for a product</p>
+        </div>
+        <a th:href="@{/transactions}" class="btn-link">← Back to History</a>
+    </div>
+
+    <div class="form-center">
+        <div class="form-card">
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+            <form th:action="@{/transactions/save}" method="post">
+                <div class="form-group">
+                    <label>Product</label>
+                    <select name="productId" required>
+                        <option value="">Select a product</option>
+                        <option th:each="product : ${products}"
+                                th:value="${product.id}"
+                                th:text="${product.name + ' (qty: ' + product.quantity + ')'}">
+                            Product
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Transaction Type</label>
+                        <select name="type" required>
+                            <option value="STOCK_IN">Stock In</option>
+                            <option value="STOCK_OUT">Stock Out</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" name="quantity" min="1" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Note (optional)</label>
+                    <input type="text" name="note" placeholder="e.g. Received shipment / Customer sale" />
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" style="width:auto; padding:12px 28px;">
+                        Save Transaction
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

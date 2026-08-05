@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Company User - Inventory Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-body">
+
+<div th:replace="~{fragments/navbar :: sidebar('users')}"></div>
+
+<div class="main-content form-page">
+    <div class="header-bar">
+        <div>
+            <p class="page-kicker">Team</p>
+            <h1>Add Admin or Staff</h1>
+            <p class="page-subtitle">Create a user under your company</p>
+        </div>
+        <a th:href="@{/users}" class="btn-link">← Back to Users</a>
+    </div>
+
+    <div class="form-center">
+        <div class="form-card">
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+            <p class="hint">
+                New users are created under your company and can only access this company's inventory.
+            </p>
+
+            <form th:action="@{/users/save}" th:object="${user}" method="post">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" th:field="*{username}" required />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" th:field="*{password}" required />
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select th:field="*{role}">
+                        <option value="ROLE_STAFF">Staff</option>
+                        <option value="ROLE_ADMIN">Admin</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" style="width:auto; padding:12px 28px;">
+                        Create User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
