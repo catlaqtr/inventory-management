@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Billing - Inventory Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-body">
+
+<div th:replace="~{fragments/navbar :: sidebar('billing')}"></div>
+
+<div class="main-content">
+    <div class="header-bar">
+        <div>
+            <p class="page-kicker">Sales</p>
+            <h1>Billing</h1>
+            <p class="page-subtitle">
+                Total sales
+                <strong th:text="${#numbers.formatDecimal(totalSales, 1, 2)}">0.00</strong>
+            </p>
+        </div>
+        <a th:href="@{/billing/new}" class="btn-action">+ Create Invoice</a>
+    </div>
+
+    <div class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th>Invoice #</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${invoices == null or invoices.isEmpty()}">
+                <td colspan="5" class="empty-row">No invoices yet.</td>
+            </tr>
+            <tr th:each="invoice : ${invoices}">
+                <td th:text="${invoice.invoiceNumber}">INV-001</td>
+                <td th:text="${invoice.customerName}">Customer</td>
+                <td th:text="${invoice.formattedInvoiceDate}">Date</td>
+                <td th:text="${#numbers.formatDecimal(invoice.totalAmount, 1, 2)}">0.00</td>
+                <td>
+                    <a th:href="@{/billing/{id}(id=${invoice.id})}" class="btn-link">View</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

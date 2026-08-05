@@ -1,13 +1,14 @@
 package com.example.inventory_management.controller;
 
 import com.example.inventory_management.dto.UserDTO;
-import com.example.inventory_management.model.User;
 import com.example.inventory_management.service.UserService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
-@RestController
-@RequestMapping("/api/auth")
+@Controller
 public class AuthController {
 
     private final UserService userService;
@@ -16,13 +17,43 @@ public class AuthController {
         this.userService = userService;
     }
 
+    @GetMapping("/register")
+    public String showRegisterPage(Model model) {
+        model.addAttribute("user", new UserDTO());
+        return "register";
+    }
+
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
+    public String registerCompany(
+            @ModelAttribute("user") UserDTO userDTO,
+            Model model
+    ) {
         try {
-            User registeredUser = userService.registerUser(userDTO);
-            return ResponseEntity.ok("User registered successfully: " + registeredUser.getUsername());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            userService.registerCompanyAdmin(userDTO);
+            return "redirect:/login?registered=true";
+        } catch (RuntimeException exception) {
+            model.addAttribute("errorMessage", exception.getMessage());
+            return "register";
+        }
+    }
+
+    @GetMapping("/forgot-password")
+    public String showForgotPasswordPage(Model model) {
+        model.addAttribute("user", new UserDTO());
+        return "forgot-password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String resetAdminPassword(
+            @ModelAttribute("user") UserDTO userDTO,
+            Model model
+    ) {
+        try {
+            userService.resetCompanyAdminPassword(userDTO);
+            return "redirect:/login?passwordReset=true";
+        } catch (RuntimeException exception) {
+            model.addAttribute("errorMessage", exception.getMessage());
+            return "forgot-password";
         }
     }
 }

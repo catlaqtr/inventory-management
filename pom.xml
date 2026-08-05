@@ -45,6 +45,12 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
+		<!-- Thymeleaf + Spring Security integration (sec:authorize) -->
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+		</dependency>
+
 		<!-- MySQL JDBC Driver -->
 		<dependency>
 			<groupId>com.mysql</groupId>

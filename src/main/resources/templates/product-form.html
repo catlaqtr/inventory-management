@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${formTitle}">Product Form</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-body">
+
+<div th:replace="~{fragments/navbar :: sidebar('products')}"></div>
+
+<div class="main-content form-page">
+    <div class="header-bar">
+        <div>
+            <p class="page-kicker">Catalog</p>
+            <h1 th:text="${formTitle}">Product Form</h1>
+            <p class="page-subtitle">Product details for your inventory</p>
+        </div>
+        <a th:href="@{/products}" class="btn-link">← Back to Products</a>
+    </div>
+
+    <div class="form-center">
+        <div class="form-card">
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+            <form th:action="@{/products/save}" th:object="${product}" method="post">
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" th:field="*{name}" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" th:field="*{category}" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea th:field="*{description}" rows="3"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" th:if="*{id == null}">
+                        <label>Initial Quantity</label>
+                        <input type="number" th:field="*{quantity}" min="0" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Low Stock Level</label>
+                        <input type="number" th:field="*{lowStockLevel}" min="0" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Unit Price</label>
+                        <input type="number" th:field="*{unitPrice}" min="0" step="0.01" required />
+                    </div>
+                </div>
+
+                <p th:if="*{id != null}" class="hint">
+                    Quantity is updated only through Stock In / Stock Out transactions.
+                </p>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" style="width:auto; padding:12px 28px;"
+                            th:text="*{id == null} ? 'Add Product' : 'Update Product'">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

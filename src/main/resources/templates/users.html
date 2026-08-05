@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Users - Inventory Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-body">
+
+<div th:replace="~{fragments/navbar :: sidebar('users')}"></div>
+
+<div class="main-content">
+    <div class="header-bar">
+        <div>
+            <p class="page-kicker">Team</p>
+            <h1>Staff Management</h1>
+            <p class="page-subtitle">Admins and staff for your company</p>
+        </div>
+        <a th:href="@{/users/add}" class="btn-action">+ Add Admin / Staff</a>
+    </div>
+
+    <div th:if="${param.created}" class="alert alert-success">
+        User created successfully for your company.
+    </div>
+    <div th:if="${param.passwordChanged}" class="alert alert-success">
+        Password updated successfully.
+    </div>
+    <div th:if="${param.ownPassword}" class="alert alert-danger">
+        Use Forgot Password on the sign-in page to reset your own admin password.
+    </div>
+
+    <div class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${users == null or users.isEmpty()}">
+                <td colspan="4" class="empty-row">No users found.</td>
+            </tr>
+            <tr th:each="u : ${users}">
+                <td th:text="${u.username}">username</td>
+                <td th:text="${u.role}">ROLE</td>
+                <td th:text="${u.enabled} ? 'Active' : 'Disabled'">Active</td>
+                <td>
+                    <a th:if="${u.id != currentUserId}"
+                       th:href="@{/users/{id}/change-password(id=${u.id})}"
+                       class="btn-link">Change password</a>
+                    <span th:if="${u.id == currentUserId}" class="hint" style="margin:0;">You</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
