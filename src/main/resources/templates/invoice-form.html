@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Invoice - Inventory Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-body">
+
+<div th:replace="~{fragments/navbar :: sidebar('billing')}"></div>
+
+<div class="main-content">
+    <div class="header-bar">
+        <div>
+            <p class="page-kicker">Sales</p>
+            <h1>Create Invoice</h1>
+            <p class="page-subtitle">Bill a customer and update stock</p>
+        </div>
+        <a th:href="@{/billing}" class="btn-link">← Back to Billing</a>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <form th:action="@{/billing/save}" th:object="${invoiceForm}" method="post" id="invoiceForm" class="bill-form">
+        <section class="bill-fieldset">
+            <h2 class="section-title">Personal Information</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" th:field="*{customerName}" required />
+                </div>
+                <div class="form-group">
+                    <label>Mobile No</label>
+                    <input type="text" th:field="*{customerMobile}" placeholder="Optional" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Note (optional)</label>
+                <input type="text" th:field="*{note}" />
+            </div>
+        </section>
+
+        <section class="bill-fieldset">
+            <h2 class="section-title">Your Bill</h2>
+
+            <div class="bill-table-wrap">
+                <table class="bill-table">
+                    <thead>
+                    <tr>
+                        <th style="width: 60px;">Sr No</th>
+                        <th>Product Name</th>
+                        <th style="width: 120px;">Quantity</th>
+                        <th style="width: 120px;">Rate</th>
+                        <th style="width: 130px;">Total Amount</th>
+                        <th style="width: 80px;"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="invoiceLines">
+                    <tr th:each="line, iter : *{lines}" class="invoice-line">
+                        <td class="sr-no" th:text="${iter.count}">1</td>
+                        <td>
+                            <select th:field="*{lines[__${iter.index}__].productId}"
+                                    class="product-select"
+                                    required>
+                                <option value="">Select product</option>
+                                <option th:each="product : ${products}"
+                                        th:value="${product.id}"
+                                        th:attr="data-price=${product.unitPrice}, data-stock=${product.quantity}"
+                                        th:text="${product.name}">
+                                    Product
+                                </option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number"
+                                   class="qty-input"
+                                   th:field="*{lines[__${iter.index}__].quantity}"
+                                   min="1"
+                                   value="1"
+                                   required />
+                        </td>
+                        <td class="rate-cell">0.00</td>
+                        <td class="line-total-cell">0.00</td>
+                        <td>
+                            <button type="button" class="btn-icon-remove remove-line" title="Remove item" aria-label="Remove item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 6h18"/>
+                                    <path d="M8 6V4h8v2"/>
+                                    <path d="M19 6l-1 14H6L5 6"/>
+                                    <path d="M10 11v6M14 11v6"/>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin: 14px 0;">
+                <button type="button" id="addLineBtn" class="btn-secondary">+ Add Item</button>
+            </div>
+
+            <div class="bill-summary">
+                <div class="bill-summary-row">
+                    <span>Amount :</span>
+                    <strong id="subtotalDisplay">0.00</strong>
+                </div>
+                <div class="bill-summary-row tax-row">
+                    <span class="tax-left">
+                        <span>Tax :</span>
+                        <select th:field="*{taxCode}" id="taxSelect" class="tax-select">
+                            <option th:each="tax : ${taxOptions}"
+                                    th:value="${tax.name()}"
+                                    th:attr="data-rate=${tax.ratePercent}"
+                                    th:text="${tax.dropdownLabel}">
+                                ON HST (13%)
+                            </option>
+                        </select>
+                    </span>
+                    <strong id="taxDisplay">0.00</strong>
+                </div>
+                <div class="bill-summary-row total-row">
+                    <span>Total Amount :</span>
+                    <strong id="totalDisplay">0.00</strong>
+                </div>
+            </div>
+
+            <p class="bill-thanks">Thank you sincerely for your kind visit.</p>
+        </section>
+
+        <div class="bill-actions">
+            <button type="submit" class="btn-primary" style="width:auto; padding:12px 28px;">
+                Create Invoice
+            </button>
+        </div>
+    </form>
+</div>
+
+<template id="lineTemplate">
+    <tr class="invoice-line">
+        <td class="sr-no">1</td>
+        <td>
+            <select name="__PRODUCT__" class="product-select" required>
+                <option value="">Select product</option>
+                <option th:each="product : ${products}"
+                        th:value="${product.id}"
+                        th:attr="data-price=${product.unitPrice}, data-stock=${product.quantity}"
+                        th:text="${product.name}">
+                    Product
+                </option>
+            </select>
+        </td>
+        <td>
+            <input type="number" name="__QTY__" class="qty-input" min="1" value="1" required />
+        </td>
+        <td class="rate-cell">0.00</td>
+        <td class="line-total-cell">0.00</td>
+        <td>
+            <button type="button" class="btn-icon-remove remove-line" title="Remove item" aria-label="Remove item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"/>
+                    <path d="M8 6V4h8v2"/>
+                    <path d="M19 6l-1 14H6L5 6"/>
+                    <path d="M10 11v6M14 11v6"/>
+                </svg>
+            </button>
+        </td>
+    </tr>
+</template>
+
+<script>
+    (function () {
+        const tbody = document.getElementById('invoiceLines');
+        const template = document.getElementById('lineTemplate');
+        const addBtn = document.getElementById('addLineBtn');
+        const taxSelect = document.getElementById('taxSelect');
+
+        function money(value) {
+            return Number(value || 0).toFixed(2);
+        }
+
+        function reindex() {
+            Array.from(tbody.querySelectorAll('.invoice-line')).forEach((row, index) => {
+                row.querySelector('.sr-no').textContent = String(index + 1);
+                row.querySelector('.product-select').name = 'lines[' + index + '].productId';
+                row.querySelector('.qty-input').name = 'lines[' + index + '].quantity';
+            });
+        }
+
+        function updateTotals() {
+            let subtotal = 0;
+            Array.from(tbody.querySelectorAll('.invoice-line')).forEach((row) => {
+                const select = row.querySelector('.product-select');
+                const qtyInput = row.querySelector('.qty-input');
+                const option = select.options[select.selectedIndex];
+                const price = option && option.dataset.price ? Number(option.dataset.price) : 0;
+                const qty = Number(qtyInput.value || 0);
+                const lineTotal = price * qty;
+                row.querySelector('.rate-cell').textContent = money(price);
+                row.querySelector('.line-total-cell').textContent = money(lineTotal);
+                subtotal += lineTotal;
+            });
+
+            const taxOption = taxSelect.options[taxSelect.selectedIndex];
+            const taxRate = taxOption && taxOption.dataset.rate ? Number(taxOption.dataset.rate) : 0;
+            const taxAmount = subtotal * taxRate / 100;
+            const total = subtotal + taxAmount;
+
+            document.getElementById('subtotalDisplay').textContent = money(subtotal);
+            document.getElementById('taxDisplay').textContent = money(taxAmount);
+            document.getElementById('totalDisplay').textContent = money(total);
+        }
+
+        addBtn.addEventListener('click', function () {
+            tbody.appendChild(template.content.cloneNode(true));
+            reindex();
+            updateTotals();
+        });
+
+        tbody.addEventListener('click', function (event) {
+            if (event.target.classList.contains('remove-line')) {
+                const rows = tbody.querySelectorAll('.invoice-line');
+                if (rows.length <= 1) {
+                    return;
+                }
+                event.target.closest('.invoice-line').remove();
+                reindex();
+                updateTotals();
+            }
+        });
+
+        tbody.addEventListener('change', updateTotals);
+        tbody.addEventListener('input', updateTotals);
+        taxSelect.addEventListener('change', updateTotals);
+
+        reindex();
+        updateTotals();
+    })();
+</script>
+
+</body>
+</html>

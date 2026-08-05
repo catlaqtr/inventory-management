@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+
+<aside th:fragment="sidebar(activeTab)" class="sidebar">
+    <div class="sidebar-top">
+        <a th:href="@{/dashboard}" class="brand">
+            <span class="brand-mark" aria-hidden="true">
+                <svg class="brand-cart" viewBox="0 0 24 24">
+                    <circle cx="9" cy="20" r="1.6" fill="#e11d2e"/>
+                    <circle cx="18" cy="20" r="1.6" fill="#e11d2e"/>
+                    <path d="M3 4h2l2.2 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.2L21 8H7"
+                          fill="none" stroke="#e11d2e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
+            <span class="brand-copy">
+                <span class="brand-product">I-nvy</span>
+                <span class="brand-company"
+                      th:text="${#authentication.principal.companyName}">Company</span>
+            </span>
+        </a>
+
+        <nav>
+            <ul class="nav-links">
+                <li th:classappend="${activeTab == 'dashboard'} ? 'active'">
+                    <a th:href="@{/dashboard}">
+                        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 3.5a8.5 8.5 0 1 0 8.1 6.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            <path d="M12 12l5.2-5.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            <circle cx="12" cy="12" r="1.4" fill="currentColor"/>
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <li th:classappend="${activeTab == 'products'} ? 'active'">
+                    <a th:href="@{/products}">
+                        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="4" y="4" width="16" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <rect x="4" y="10" width="16" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <rect x="4" y="16" width="16" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                        </svg>
+                        <span>Inventory</span>
+                    </a>
+                </li>
+
+                <li th:classappend="${activeTab == 'transactions'} ? 'active'">
+                    <a th:href="@{/transactions}">
+                        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M7 7h11M7 12h11M7 17h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            <path d="M4 7h.01M4 12h.01M4 17h.01" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                        </svg>
+                        <span>Transactions</span>
+                    </a>
+                </li>
+
+                <li th:classappend="${activeTab == 'billing'} ? 'active'">
+                    <a th:href="@{/billing}">
+                        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M8 3v4M16 3v4M4 10h16M9 14h6M9 17h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                        <span>Billing</span>
+                    </a>
+                </li>
+
+                <li th:classappend="${activeTab == 'reports'} ? 'active'">
+                    <a th:href="@{/reports}">
+                        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M8 3v4M16 3v4M4 10h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                        <span>Reports</span>
+                    </a>
+                </li>
+
+                <li th:classappend="${activeTab == 'users'} ? 'active'"
+                    sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/users}">
+                        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="10" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M4.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            <path d="M17 8v5M14.5 10.5H19.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                        <span>Staff Management</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+        <a th:href="@{/logout}" class="nav-logout">
+            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M10 7V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-2"
+                      fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M3 12h11M10 8l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Logout</span>
+        </a>
+    </div>
+</aside>
+
+</body>
+</html>

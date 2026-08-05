@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Invoice ' + ${invoice.invoiceNumber}">Invoice</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-body">
+
+<div th:replace="~{fragments/navbar :: sidebar('billing')}"></div>
+
+<div class="main-content">
+    <div class="header-bar no-print">
+        <div>
+            <p class="page-kicker">Invoice</p>
+            <h1 th:text="${invoice.invoiceNumber}">INV-001</h1>
+            <p class="page-subtitle">Customer bill details</p>
+        </div>
+        <a th:href="@{/billing}" class="btn-link">← Back to Billing</a>
+    </div>
+
+    <div class="bill-print-card">
+        <section class="bill-fieldset invoice-view">
+            <div class="invoice-view-header">
+                <div>
+                    <p class="invoice-label">Invoice</p>
+                    <h2 class="invoice-number" th:text="${invoice.invoiceNumber}">INV-001</h2>
+                </div>
+                <div class="invoice-date-box">
+                    <p class="invoice-label">Date</p>
+                    <p th:text="${invoice.formattedInvoiceDate}">Date</p>
+                </div>
+            </div>
+
+            <div class="invoice-info-grid">
+                <div class="invoice-info-item">
+                    <span class="invoice-label">Full Name</span>
+                    <strong th:text="${invoice.customerName}">Customer</strong>
+                </div>
+                <div class="invoice-info-item">
+                    <span class="invoice-label">Mobile No</span>
+                    <strong th:text="${invoice.customerMobile != null ? invoice.customerMobile : '-'}">-</strong>
+                </div>
+                <div class="invoice-info-item" th:if="${invoice.note}">
+                    <span class="invoice-label">Note</span>
+                    <strong th:text="${invoice.note}">Note</strong>
+                </div>
+                <div class="invoice-info-item">
+                    <span class="invoice-label">Tax</span>
+                    <strong th:text="${invoice.taxDisplay}">ON_HST (13%)</strong>
+                </div>
+            </div>
+
+            <h3 class="invoice-section-heading">Items</h3>
+            <div class="bill-table-wrap">
+                <table class="bill-table">
+                    <thead>
+                    <tr>
+                        <th>Sr No</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Total Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item, iter : ${invoice.items}">
+                        <td th:text="${iter.count}">1</td>
+                        <td th:text="${item.product.name}">Product</td>
+                        <td th:text="${item.quantity}">0</td>
+                        <td th:text="${#numbers.formatDecimal(item.unitPrice, 1, 2)}">0.00</td>
+                        <td th:text="${#numbers.formatDecimal(item.lineTotal, 1, 2)}">0.00</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="bill-summary">
+                <div class="bill-summary-row">
+                    <span>Amount</span>
+                    <strong th:text="${#numbers.formatDecimal(invoice.subtotalAmount, 1, 2)}">0.00</strong>
+                </div>
+                <div class="bill-summary-row">
+                    <span th:text="${'Tax (' + invoice.taxDisplay + ')'}">Tax</span>
+                    <strong th:text="${#numbers.formatDecimal(invoice.taxAmount, 1, 2)}">0.00</strong>
+                </div>
+                <div class="bill-summary-row total-row">
+                    <span>Total Amount</span>
+                    <strong th:text="${#numbers.formatDecimal(invoice.totalAmount, 1, 2)}">0.00</strong>
+                </div>
+            </div>
+
+            <p class="bill-thanks">Thank you sincerely for your kind visit.</p>
+        </section>
+
+        <div class="bill-actions no-print">
+            <button type="button" class="btn-primary" style="width:auto; padding:12px 28px;" onclick="window.print()">
+                Print Invoice
+            </button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
